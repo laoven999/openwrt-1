@@ -163,30 +163,34 @@ jobs:
         [ $UPLOAD_COWTRANSFER = true ] && echo "🔗 [Cowtransfer](${{ steps.cowtransfer.outputs.url }})" >> release.txt
         [ $UPLOAD_WETRANSFER = true ] && echo "🔗 [WeTransfer](${{ steps.wetransfer.outputs.url }})" >> release.txt
         echo "::set-output name=status::success"
-
+	
     - name: Upload firmware to release
-	uses: softprops/action-gh-release@v1
-	if: steps.tag.outputs.status == 'success' && !cancelled()
-	env:
-	GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-	runs-on: ubuntu-20.04
-	strategy:
-	matrix:
-      node-version: [20.x]
-	steps:
-    - uses: actions/setup-node@v2
-      with:
-        node-version: ${{ matrix.node-version }}
-    - run: npm install
-    - run: |
+	  uses: softprops/action-gh-release@v1
+ 	 if: steps.tag.outputs.status == 'success' && !cancelled()
+	  env:
+	    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+	  runs-on: ubuntu-latest
+	  strategy:
+	    matrix:
+	      node-version: [20.x]
+	  steps:
+	    - uses: actions/setup-node@v2
+  	    with:
+ 	       node-version: ${{ matrix.node-version }}
+	    - run: npm install
+	    - run: |
         npm run build
-    - run: |
+	    - run: |
         npm run test
-    - run: |
+ 	   - run: |
         npm run deploy
-      env:
-        TAG: ${{ steps.tag.outputs.release_tag }}
-        FIRMWARE: ${{ env.FIRMWARE }}
+        env:
+          TAG: ${{ steps.tag.outputs.release_tag }}
+          FIRMWARE: ${{ env.FIRMWARE }}
+
+
+
+   
     - name: Delete workflow runs
       uses: GitRML/delete-workflow-runs@main
       with:
