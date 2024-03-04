@@ -99,8 +99,8 @@ jobs:
         find dl -size -1024c -exec rm -f {} \;
 
     - name: Compile the firmware
-    id: compile
-    run: |
+      id: compile
+      run: |
         cd openwrt
         echo -e "$(nproc) thread compile"
         make -j$(nproc) || make -j1 || make -j1 V=s
@@ -130,8 +130,8 @@ jobs:
       uses: dev-drprasad/delete-older-releases@v0.1.0
       if: env.UPLOAD_RELEASE == 'true' && !cancelled()
       with:
-       keep_latest: 3
-       delete_tags: true
+        keep_latest: 3
+        delete_tags: true
       env:
-       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-       node-version: '20'  # 更新使用 Node.js 20
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        node-version: '20'  # 更新使用 Node.js 20
