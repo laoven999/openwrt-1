@@ -39,7 +39,12 @@ jobs:
 
     steps:
     - name: Checkout
-      uses: actions/checkout@main
+      uses: actions/checkout@v2
+
+    - name: Set up Node.js 20.x
+      uses: actions/setup-node@v3
+      with:
+        node-version: '20.x'
 
     - name: Initialization environment
       env:
