@@ -115,6 +115,7 @@ jobs:
         echo "status=success" >> $GITHUB_ENV
 
     - name: Upload firmware to release
+      id: upload_firmware
       uses: softprops/action-gh-release@v1
       if: steps.compile.outputs.status == 'success' && !cancelled()
       env:
@@ -123,6 +124,13 @@ jobs:
         tag_name: ${{ steps.tag.outputs.release_tag }}
         body_path: release.txt
         files: ${{ env.FIRMWARE }}/*
+    - name: Validate firmware upload
+      run: |
+        if [ -n "${{ steps.upload_firmware.outputs.upload_url }}" ]; then
+          echo "Firmware uploaded successfully. Upload URL: ${{ steps.upload_firmware.outputs.upload_url }}"
+        else
+          echo "Failed to upload firmware. Please check the GITHUB_TOKEN configuration."
+        fi
 
     - name: Delete workflow runs
       uses: Mattraks/delete-workflow-runs@main
