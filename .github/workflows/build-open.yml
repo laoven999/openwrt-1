@@ -1,5 +1,71 @@
-  # 安装 feeds
-      cd openwrt && ./scripts/feeds install -a || exit 1
+steps:
+  - name: Checkout
+    uses: actions/checkout@v2
+
+  - name: Set up Node.js 20.x
+    uses: actions/setup-node@v4
+    with:
+      node-version: '20.x'
+
+  - name: Initialization environment
+    env:
+      DEBIAN_FRONTEND: noninteractive
+    run: |
+      # 初始化环境
+      # 删除旧的软件源、文件和目录
+      sudo rm -rf /etc/apt/sources.list.d/* /usr/share/dotnet /usr/local/lib/android /opt/ghc
+      # 更新软件源
+      sudo -E apt-get -qq update
+      # 安装依赖包
+      sudo -E apt-get -qq install $(curl -fsSL git.io/depends-ubuntu-2004) || exit 1
+      # 清理无用的软件包
+      sudo -E apt-get -qq autoremove --purge
+      # 清理缓存
+      sudo -E apt-get -qq clean
+      # 设置时区
+      sudo timedatectl set-timezone "$TZ"
+      # 创建工作目录
+      sudo mkdir -p /workdir
+      # 设置工作目录的所有者
+      sudo chown $USER:$GROUPS /workdir
+
+  - name: Clone source code
+    working-directory: /workdir
+    run: |
+      # 克隆源代码
+      df -hT $PWD
+      git clone $REPO_URL -b $REPO_BRANCH openwrt || exit 1
+      ln -sf /workdir/openwrt $GITHUB_WORKSPACE/openwrt
+
+  - name: Load custom feeds
+    run: |
+      # 加载自定义 feeds
+      # 如果存在 feeds 配置文件，则将其移动到 openwrt/feeds.conf.default
+      [ -e $FEEDS_CONF ] && mv $FEEDS_CONF openwrt/feeds.conf.default
+      # 设置 DIY_P1_SH 脚本的执行权限
+      chmod +x $DIY_P1_SH
+      cd openwrt
+      # 执行 DIY_P1_SH 脚本
+      $GITHUB_WORKSPACE/$DIY_P1_SH || exit 1
+
+  - name: Update feeds
+    run: |
+      # 更新 feeds
+      cd openwrt && ./scripts/feeds update -a || exit 1
+
+  - name: Install dependencies
+    run: |
+      # 安装依赖
+      cd openwrt
+      make package/symlinks
+      make -j$(nproc) defconfig
+      make -j$(nproc) download
+      make -j$(nproc) || exit 1
+
+  - name: Install feeds
+    run: |
+    # 安装 feeds
+    cd openwrt && ./scripts/feeds install -a || exit 1
 
   - name: Load custom configuration
     run: |
@@ -42,7 +108,7 @@
       make -j$(nproc) || make -j1 || make -j1 V=s || exit 1
 
   - name: Check space usage
-    if: ${{ !cancelled() }}
+    # Remove unnecessary if condition
     run: df -hT
 
   - name: Upload bin directory
