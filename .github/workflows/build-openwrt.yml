@@ -29,12 +29,12 @@ jobs:
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
 
-    - name: Set up Node.js 17.x
+    - name: Set up Node.js 20.x
       uses: actions/setup-node@v4
       with:
-        node-version: '17.x'
+        node-version: '20.x'
 
     - name: Initialization environment
       env:
