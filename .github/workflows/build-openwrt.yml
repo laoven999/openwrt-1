@@ -31,11 +31,6 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
 
-    - name: Set up Node.js 20.x
-      uses: actions/setup-node@v4
-      with:
-        node-version: '20.x'
-
     - name: Initialization environment
       env:
         DEBIAN_FRONTEND: noninteractive
