@@ -41,14 +41,14 @@ jobs:
         env:
           DEBIAN_FRONTEND: noninteractive
         run: |
-          rm -rf /etc/apt/sources.list.d/* /usr/share/dotnet /usr/local/lib/android /opt/ghc
-          apt-get -qq update
-          apt-get -qq install $(curl -fsSL git.io/depends-ubuntu-2004)
-          apt-get -qq autoremove --purge
-          apt-get -qq clean
-          timedatectl set-timezone "$TZ"
-          mkdir -p /workdir
-          chown $USER:$GROUPS /workdir
+          sudo rm -rf /etc/apt/sources.list.d/* /usr/share/dotnet /usr/local/lib/android /opt/ghc
+          sudo apt-get -qq update
+          sudo apt-get -qq install $(curl -fsSL git.io/depends-ubuntu-2004)
+          sudo apt-get -qq autoremove --purge
+          sudo apt-get -qq clean
+          sudo timedatectl set-timezone "$TZ"
+          sudo mkdir -p /workdir
+          sudo chown $USER:$GROUPS /workdir
 
       - name: Clone source code
         working-directory: /workdir
