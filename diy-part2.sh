@@ -13,7 +13,7 @@ rm -rf feeds/packages/lang/golang
 git clone https://github.com/kenzok8/golang feeds/packages/lang/golang
 
 # Modify default IP
-sed -i 's/192.168.1.1/192.168.3.50/g' package/base-files/files/bin/config_generate
+sed -i 's/192.168.1.1/192.168.0.50/g' package/base-files/files/bin/config_generate
 # 设置时区
-sed -i "315s/.*/set system.@system[-1].timezone='CST-8'/" package/base-files/files/bin/config_generate
-sed -i "315a\\\t\tset system.@system[-1].zonename='Asia/Shanghai'" package/base-files/files/bin/config_generate
+#sed -i "315s/.*/set system.@system[-1].timezone='CST-8'/" package/base-files/files/bin/config_generate
+#sed -i "315a\\\t\tset system.@system[-1].zonename='Asia/Shanghai'" package/base-files/files/bin/config_generate
